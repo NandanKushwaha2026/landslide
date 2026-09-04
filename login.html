@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Landslide Monitoring - Login</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-box">
+
+            <h1>🏔️ Landslide Monitoring</h1>
+
+            <p class="login-subtitle">
+                AI-Based Early Warning System
+            </p>
+
+            <h2>Login</h2>
+
+            <form id="loginForm">
+
+                <label>Email or Mobile Number</label>
+
+                <input
+                    type="text"
+                    id="userInput"
+                    placeholder="Enter email or mobile number"
+                    required
+                >
+
+                <label>Password</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter password"
+                    required
+                >
+
+                <button type="submit">
+                    Login
+                </button>
+
+                <p id="loginMessage"></p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            let userInput =
+                document.getElementById("userInput").value;
+
+            let password =
+                document.getElementById("password").value;
+
+            if (userInput !== "" && password !== "") {
+
+                // Login successful
+                localStorage.setItem("loggedIn", "true");
+
+                // Dashboard open
+                window.location.href = "index.html";
+
+            } else {
+
+                document.getElementById("loginMessage").textContent =
+                    "Please enter your details.";
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>
