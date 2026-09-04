@@ -11,85 +11,104 @@
 
 <body>
 
-    <div class="login-container">
+<div class="login-container">
 
-        <div class="login-box">
+    <div class="login-box">
 
-            <h1>🏔️ Landslide Monitoring</h1>
+        <h1>🏔️ Landslide Monitoring</h1>
 
-            <p class="login-subtitle">
-                AI-Based Early Warning System
-            </p>
+        <p class="login-subtitle">
+            AI-Based Early Warning System
+        </p>
 
-            <h2>Login</h2>
+        <h2>Login</h2>
 
-            <form id="loginForm">
+        <form id="loginForm">
 
-                <label>Email or Mobile Number</label>
+            <label>Email or Mobile Number</label>
 
-                <input
-                    type="text"
-                    id="userInput"
-                    placeholder="Enter email or mobile number"
-                    required
-                >
+            <input
+                type="text"
+                id="userInput"
+                placeholder="Enter registered email or mobile"
+                required
+            >
 
-                <label>Password</label>
+            <label>Password</label>
 
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Enter password"
-                    required
-                >
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter your password"
+                required
+            >
 
-                <button type="submit">
-                    Login
-                </button>
+            <button type="submit">
+                Login
+            </button>
 
-                <p id="loginMessage"></p>
-                <p>
-    Don't have an account?
-    <a href="register.html">Register</a>
-</p>
+            <p id="loginMessage"></p>
 
-            </form>
+        </form>
 
-        </div>
+        <p>
+            Don't have an account?
+            <a href="register.html">Register</a>
+        </p>
 
     </div>
 
+</div>
 
-    <script>
 
-        document.getElementById("loginForm").addEventListener("submit", function(event) {
+<script>
 
-            event.preventDefault();
+document.getElementById("loginForm").addEventListener("submit", function(event) {
 
-            let userInput =
-                document.getElementById("userInput").value;
+    event.preventDefault();
 
-            let password =
-                document.getElementById("password").value;
+    let userInput =
+        document.getElementById("userInput").value.trim();
 
-            if (userInput !== "" && password !== "") {
+    let password =
+        document.getElementById("password").value;
 
-                // Login successful
-                localStorage.setItem("loggedIn", "true");
+    // Registered user data
+    let savedUser = localStorage.getItem("user");
 
-                // Dashboard open
-                window.location.href = "index.html";
+    if (!savedUser) {
 
-            } else {
+        document.getElementById("loginMessage").textContent =
+            "No account found. Please register first.";
 
-                document.getElementById("loginMessage").textContent =
-                    "Please enter your details.";
+        return;
+    }
 
-            }
+    let user = JSON.parse(savedUser);
 
-        });
+    // Check email/mobile and password
+    if (
+        (user.email === userInput || user.mobile === userInput) &&
+        user.password === password
+    ) {
 
-    </script>
+        localStorage.setItem("loggedIn", "true");
+
+        // Save logged-in user's name
+        localStorage.setItem("loggedUser", user.name);
+
+        window.location.href = "index.html";
+
+    } else {
+
+        document.getElementById("loginMessage").textContent =
+            "❌ Invalid email/mobile or password.";
+
+    }
+
+});
+
+</script>
 
 </body>
 </html>
