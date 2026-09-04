@@ -11,6 +11,9 @@
         window.location.href = "login.html";
     }
 </script>
+    <button onclick="logout()" class="logout-btn">
+    Logout
+</button>
 
     <h1>AI-Based Landslide Risk Monitoring System</h1>
 
@@ -61,5 +64,17 @@
     <div id="map"></div>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js"></script>
+    <script>
+
+function logout() {
+
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("loggedUser");
+
+    window.location.href = "login.html";
+
+}
+
+</script>
 </body>
 </html>
