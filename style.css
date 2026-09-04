@@ -1,0 +1,105 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f2f7f5;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+h1 {
+    background: #14532d;
+    color: white;
+    padding: 25px;
+    margin: 0;
+}
+
+p {
+    font-size: 20px;
+    color: #333;
+    margin-top: 30px;
+}
+
+button {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #b91c1c;
+}
+.dashboard {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 30px;
+}
+
+.card {
+    background: white;
+    width: 200px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.card h2 {
+    font-size: 20px;
+    color: #14532d;
+}
+
+.card p {
+    font-size: 24px;
+    font-weight: bold;
+}
+.risk-result {
+    max-width: 600px;
+    margin: 25px auto;
+    padding: 20px;
+    background: #fee2e2;
+    border: 2px solid #dc2626;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.risk-result h2 {
+    color: #b91c1c;
+}
+
+.risk-result h3 {
+    color: #dc2626;
+    font-size: 24px;
+}
+
+.risk-result p {
+    margin: 10px;
+    font-size: 17px;
+}
+.high-risk {
+    color: #dc2626;
+}
+
+.medium-risk {
+    color: #d97706;
+}
+
+.low-risk {
+    color: #16a34a;
+}
+.map-title {
+    margin-top: 40px;
+    color: #14532d;
+}
+
+#map {
+    width: 90%;
+    height: 400px;
+    margin: 20px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}

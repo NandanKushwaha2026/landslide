@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head><link rel="stylesheet" href="style.css">
+    <title>Landslide Risk Monitoring System</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+
+<body>
+
+    <h1>AI-Based Landslide Risk Monitoring System</h1>
+
+    <p>North Eastern Region (NER)</p>
+
+    <label for="location">📍 Select Location:</label>
+
+<select id="location">
+    <option value="Sikkim">Sikkim</option>
+    <option value="Assam">Assam</option>
+    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+    <option value="Meghalaya">Meghalaya</option>
+    <option value="Nagaland">Nagaland</option>
+    <option value="Manipur">Manipur</option>
+    <option value="Mizoram">Mizoram</option>
+    <option value="Tripura">Tripura</option>
+</select>
+    <div class="dashboard">
+
+    <div class="card">
+        <h2>🌧️ Rainfall</h2>
+        <p id="rainfall">Loading...</p>
+    </div>
+
+    <div class="card">
+        <h2>🌡️ Temperature</h2>
+        <p id="temperature">Loading...</p>
+    </div>
+
+    <div class="card">
+        <h2>💧 Humidity</h2>
+        <p id="humidity">Loadinh...</p>
+    </div>
+
+    <div class="card">
+        <h2>⚠️ Risk Level</h2>
+        <p id="riskLevel">Risk Score: --%</p>
+    </div>
+
+</div>
+
+    <button onclick="checkRisk()">Check Landslide Risk</button>
+
+    <div id="riskResult" class="risk-result"></div>
+
+    <h2 class="map-title">🗺️ Landslide Risk Map</h2>
+
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
