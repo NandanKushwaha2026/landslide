@@ -41,6 +41,9 @@ function checkRisk() {
         <p><strong>Risk Score: ${score}%</strong></p>
         <p>Please stay alert and follow local authorities.</p>
     `;
+    if (riskLevel === "HIGH") {
+    triggerWarningSMS();
+}
 }
 const locations = {
     "Sikkim": [27.5330, 88.5122],
@@ -178,3 +181,18 @@ getWeather();
 document.getElementById("location").addEventListener("change", function () {
     getWeather();
 });
+function triggerWarningSMS() {
+
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+        console.log("No registered user found.");
+        return;
+    }
+
+    const userData = JSON.parse(user);
+
+    console.log("⚠️ HIGH RISK WARNING");
+    console.log("SMS will be sent to:", userData.mobile);
+
+}
