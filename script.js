@@ -192,7 +192,54 @@ function triggerWarningSMS() {
 
     const userData = JSON.parse(user);
 
-    console.log("⚠️ HIGH RISK WARNING");
-    console.log("SMS will be sent to:", userData.mobile);
+    const mobile = userData.mobile;
+
+    // Last 4 digits only for privacy
+    const maskedMobile =
+        "******" + mobile.slice(-4);
+
+    const smsMessage =
+        "LANDSLIDE WARNING: High landslide risk detected in your registered area. Please move to a safer location and follow local authorities' instructions.";
+
+    console.log("⚠️ DEMO SMS SENT");
+    console.log("Mobile:", mobile);
+    console.log("Message:", smsMessage);
+
+    // Demo SMS notification
+    const smsBox = document.createElement("div");
+
+    smsBox.style.marginTop = "15px";
+    smsBox.style.padding = "15px";
+    smsBox.style.border = "2px solid red";
+    smsBox.style.borderRadius = "10px";
+    smsBox.style.background = "#fff0f0";
+
+    smsBox.innerHTML = `
+        <h3>📱 SMS Alert — DEMO</h3>
+
+        <p>
+            <strong>Status:</strong> ✅ SMS Sent
+        </p>
+
+        <p>
+            <strong>Registered Mobile:</strong>
+            ${maskedMobile}
+        </p>
+
+        <p>
+            <strong>Message:</strong><br>
+            ${smsMessage}
+        </p>
+
+        <small>
+            ⚠️ Demo Mode — No real SMS service connected yet.
+        </small>
+    `;
+
+    const result = document.getElementById("riskResult");
+
+    if (result) {
+        result.appendChild(smsBox);
+    }
 
 }
