@@ -1,5 +1,3 @@
-let userLatitude = null;
-let userLongitude = null;
 
 function getLiveLocation() {
     const status = document.getElementById("locationStatus");
