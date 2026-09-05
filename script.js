@@ -243,3 +243,121 @@ function triggerWarningSMS() {
     }
 
 }
+// ===============================
+// LIVE LOCATION
+// ===============================
+
+let userLatitude = null;
+let userLongitude = null;
+
+function getLiveLocation() {
+
+    const status = document.getElementById("locationStatus");
+    const coordinates = document.getElementById("coordinates");
+
+    if (!navigator.geolocation) {
+        status.textContent = "❌ Location is not supported by this browser.";
+        return;
+    }
+
+    status.textContent = "📍 Detecting your live location...";
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+
+            userLatitude = position.coords.latitude;
+            userLongitude = position.coords.longitude;
+
+            status.textContent = "✅ Live location detected.";
+
+            coordinates.textContent =
+                "Latitude: " + userLatitude.toFixed(6) +
+                " | Longitude: " + userLongitude.toFixed(6);
+
+            // Save location for current browser
+            localStorage.setItem(
+                "userLocation",
+                JSON.stringify({
+                    latitude: userLatitude,
+                    longitude: userLongitude
+                })
+            );
+
+        },
+
+        function(error) {
+
+            if (error.code === 1) {
+                status.textContent =
+                    "❌ Location permission denied. Please allow location access.";
+            }
+            else if (error.code === 2) {
+                status.textContent =
+                    "❌ Location unavailable.";
+            }
+            else if (error.code === 3) {
+                status.textContent =
+                    "❌ Location request timed out.";
+            }
+            else {
+                status.textContent =
+                    "❌ Unable to detect location.";
+            }
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        }
+    );
+}
+
+
+// Location button
+const getLocationBtn =
+    document.getElementById("getLocationBtn");
+
+if (getLocationBtn) {
+
+    getLocationBtn.addEventListener(
+        "click",
+        getLiveLocation
+    );
+
+}
+
+
+// Automatically load saved location
+const savedLocation =
+    localStorage.getItem("userLocation");
+
+if (savedLocation) {
+
+    const locationData =
+        JSON.parse(savedLocation);
+
+    userLatitude = locationData.latitude;
+    userLongitude = locationData.longitude;
+
+    const status =
+        document.getElementById("locationStatus");
+
+    const coordinates =
+        document.getElementById("coordinates");
+
+    if (status && coordinates) {
+
+        status.textContent =
+            "✅ Saved location loaded.";
+
+        coordinates.textContent =
+            "Latitude: " +
+            userLatitude.toFixed(6) +
+            " | Longitude: " +
+            userLongitude.toFixed(6);
+
+    }
+
+}
