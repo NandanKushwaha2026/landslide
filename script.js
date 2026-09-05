@@ -1,8 +1,9 @@
 function checkRisk() {
 
-    const location = document.getElementById("location").value;
-    const result = document.getElementById("riskResult");
-
+  const location =
+    userLatitude !== null && userLongitude !== null
+        ? userLatitude.toFixed(6) + ", " + userLongitude.toFixed(6)
+        : "Live location not detected";
     const score = window.weatherRiskScore ?? 0;
 
     let riskLevel;
