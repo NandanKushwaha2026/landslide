@@ -1,3 +1,40 @@
+let userLatitude = null;
+let userLongitude = null;
+
+function getLiveLocation() {
+    const status = document.getElementById("locationStatus");
+    const coordinates = document.getElementById("coordinates");
+
+    status.textContent = "📍 Detecting location...";
+
+    if (!navigator.geolocation) {
+        status.textContent = "❌ Geolocation is not supported.";
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        function(position) {
+            userLatitude = position.coords.latitude;
+            userLongitude = position.coords.longitude;
+
+            status.textContent = "✅ Live location detected.";
+
+            coordinates.textContent =
+                "Latitude: " + userLatitude.toFixed(6) +
+                " | Longitude: " + userLongitude.toFixed(6);
+        },
+        function(error) {
+            status.textContent =
+                "❌ Location permission denied or unavailable.";
+            console.log(error);
+        },
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+    );
+}
 function checkRisk() {
 
   const location =
