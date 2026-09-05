@@ -21,16 +21,17 @@
 
     <label for="location">📍 Select Location:</label>
 
-<select id="location">
-    <option value="Sikkim">Sikkim</option>
-    <option value="Assam">Assam</option>
-    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
-    <option value="Meghalaya">Meghalaya</option>
-    <option value="Nagaland">Nagaland</option>
-    <option value="Manipur">Manipur</option>
-    <option value="Mizoram">Mizoram</option>
-    <option value="Tripura">Tripura</option>
-</select>
+<div class="location-box">
+    <button id="getLocationBtn" type="button">
+        📍 Use My Live Location
+    </button>
+
+    <p id="locationStatus">
+        Location not detected yet.
+    </p>
+
+    <p id="coordinates"></p>
+</div>
     <div class="dashboard">
 
     <div class="card">
