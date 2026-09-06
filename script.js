@@ -427,7 +427,6 @@ if (savedLocation) {
 
 } 
 async function searchLocation() {
-
     const searchText =
         document.getElementById("searchLocation").value.trim();
 
@@ -437,11 +436,10 @@ async function searchLocation() {
     }
 
     try {
-
         const url =
             "https://geocoding-api.open-meteo.com/v1/search?name=" +
             encodeURIComponent(searchText) +
-            "&count=1&language=en&format=json";
+            "&count=10&language=en&format=json&countryCode=IN";
 
         const response = await fetch(url);
 
@@ -452,10 +450,13 @@ async function searchLocation() {
         const data = await response.json();
 
         if (!data.results || data.results.length === 0) {
-            alert("Location not found.");
+            alert(
+                "Location not found in India. Please try another location."
+            );
             return;
         }
 
+        // First Indian result
         const location = data.results[0];
 
         userLatitude = location.latitude;
@@ -474,7 +475,8 @@ async function searchLocation() {
             "📍 " +
             location.name +
             ", " +
-            (location.country || "")
+            (location.admin1 || "") +
+            ", India"
         )
         .openPopup();
 
@@ -490,7 +492,6 @@ async function searchLocation() {
         getWeather();
 
     } catch (error) {
-
         console.error("Search Error:", error);
 
         alert(
