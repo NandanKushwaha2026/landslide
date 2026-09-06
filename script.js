@@ -424,6 +424,7 @@ if (savedLocation) {
 
 } 
 async function searchLocation() {
+    console.log("Search function called");
 
     const searchText =
         document.getElementById("searchLocation").value.trim();
