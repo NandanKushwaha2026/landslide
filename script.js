@@ -415,8 +415,6 @@ if (savedLocation) {
 
 } 
 async function searchLocation() {
-    console.log("Search function called");
-
     const searchText =
         document.getElementById("searchLocation").value.trim();
 
@@ -425,43 +423,62 @@ async function searchLocation() {
         return;
     }
 
-    const url =
-        "https://nominatim.openstreetmap.org/search?format=json&q=" +
-        encodeURIComponent(searchText);
-
     try {
+        const url =
+            "https://photon.komoot.io/api/?q=" +
+            encodeURIComponent(searchText) +
+            "&limit=1";
 
         const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error("Location API failed");
+        }
+
         const data = await response.json();
 
-        if (data.length === 0) {
+        if (!data.features || data.features.length === 0) {
             alert("Location not found.");
             return;
         }
 
-        userLatitude = parseFloat(data[0].lat);
-        userLongitude = parseFloat(data[0].lon);
+        const location = data.features[0];
 
-        map.setView([userLatitude, userLongitude], 13);
+        userLatitude = location.geometry.coordinates[1];
+        userLongitude = location.geometry.coordinates[0];
 
-        marker.setLatLng([userLatitude, userLongitude])
-            .setPopupContent(
-                "📍 " + data[0].display_name
-            )
-            .openPopup();
+        map.setView(
+            [userLatitude, userLongitude],
+            13
+        );
 
-        getWeather();
+        marker.setLatLng([
+            userLatitude,
+            userLongitude
+        ])
+        .setPopupContent(
+            "📍 " +
+            (location.properties.name || searchText)
+        )
+        .openPopup();
 
         document.getElementById("locationStatus").textContent =
             "✅ Searched location selected.";
 
         document.getElementById("coordinates").textContent =
-            "Latitude: " + userLatitude.toFixed(6) +
-            " | Longitude: " + userLongitude.toFixed(6);
+            "Latitude: " +
+            userLatitude.toFixed(6) +
+            " | Longitude: " +
+            userLongitude.toFixed(6);
+
+        getWeather();
 
     } catch (error) {
 
         console.error("Search Error:", error);
-        alert("Unable to search location.");
+
+        alert(
+            "Unable to search location. Please try again."
+        );
     }
-} 
+}
