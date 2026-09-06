@@ -423,3 +423,53 @@ if (savedLocation) {
     }
 
 } 
+async function searchLocation() {
+
+    const searchText =
+        document.getElementById("searchLocation").value.trim();
+
+    if (searchText === "") {
+        alert("Please enter a location.");
+        return;
+    }
+
+    const url =
+        "https://nominatim.openstreetmap.org/search?format=json&q=" +
+        encodeURIComponent(searchText);
+
+    try {
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.length === 0) {
+            alert("Location not found.");
+            return;
+        }
+
+        userLatitude = parseFloat(data[0].lat);
+        userLongitude = parseFloat(data[0].lon);
+
+        map.setView([userLatitude, userLongitude], 13);
+
+        marker.setLatLng([userLatitude, userLongitude])
+            .setPopupContent(
+                "📍 " + data[0].display_name
+            )
+            .openPopup();
+
+        getWeather();
+
+        document.getElementById("locationStatus").textContent =
+            "✅ Searched location selected.";
+
+        document.getElementById("coordinates").textContent =
+            "Latitude: " + userLatitude.toFixed(6) +
+            " | Longitude: " + userLongitude.toFixed(6);
+
+    } catch (error) {
+
+        console.error("Search Error:", error);
+        alert("Unable to search location.");
+    }
+}
