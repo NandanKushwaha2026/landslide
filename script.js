@@ -298,7 +298,7 @@ function triggerWarningSMS() {
     `;
 
     const result = document.getElementById("riskResult");
-
+          getWeather();
     if (result) {
         result.appendChild(smsBox);
     }
