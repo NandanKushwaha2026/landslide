@@ -133,7 +133,7 @@ Object.keys(riskData).forEach(function(location) {
     );
 });
 
-let marker = L.marker(locations["Sikkim"])
+ marker = L.marker(locations["Sikkim"])
     .addTo(map)
     .bindPopup("📍 Sikkim - Landslide Monitoring")
     .openPopup();
