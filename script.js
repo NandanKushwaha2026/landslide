@@ -464,4 +464,4 @@ async function searchLocation() {
         console.error("Search Error:", error);
         alert("Unable to search location.");
     }
-}
+} 
