@@ -1,3 +1,5 @@
+let userLatitude = null;
+let userLongitude = null;
 
 function getLiveLocation() {
     const status = document.getElementById("locationStatus");
@@ -279,12 +281,6 @@ function triggerWarningSMS() {
     }
 
 }
-// ===============================
-// LIVE LOCATION
-// ===============================
-
-let userLatitude = null;
-let userLongitude = null;
 
 function getLiveLocation() {
 
