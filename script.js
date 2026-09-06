@@ -298,7 +298,7 @@ function triggerWarningSMS() {
     `;
 
     const result = document.getElementById("riskResult");
-          getWeather();
+          
     if (result) {
         result.appendChild(smsBox);
     }
@@ -328,7 +328,7 @@ function getLiveLocation() {
             coordinates.textContent =
                 "Latitude: " + userLatitude.toFixed(6) +
                 " | Longitude: " + userLongitude.toFixed(6);
-
+     getWeather();
             // Save location for current browser
             localStorage.setItem(
                 "userLocation",
