@@ -1,3 +1,4 @@
+let marker;
 let userLatitude = null;
 let userLongitude = null;
 
