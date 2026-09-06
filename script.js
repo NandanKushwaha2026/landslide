@@ -145,80 +145,103 @@ let marker = L.marker(locations["Sikkim"])
     .bindPopup("📍 Sikkim - Landslide Monitoring")
     .openPopup();
 
-document.getElementById("location").addEventListener("change", function () {
-
-    const selectedLocation = this.value;
-    const coordinates = locations[selectedLocation];
-
-    map.setView(coordinates, 7);
-
-    marker.setLatLng(coordinates);
-
-    marker
-        .setPopupContent("📍 " + selectedLocation + " - Landslide Monitoring")
-        .openPopup();
-});
 async function getWeather() {
-    const selectedLocation = document.getElementById("location").value;
-    const [latitude, longitude] = locations[selectedLocation];
 
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m&hourly=precipitation&past_days=1&forecast_days=1&timezone=auto`;
+    if (userLatitude === null || userLongitude === null) {
+        console.log("Live location not available yet.");
+        return;
+    }
 
-    const response = await fetch(url);
-    const data = await response.json();
+    const latitude = userLatitude;
+    const longitude = userLongitude;
 
-    console.log("Temperature:", data.current.temperature_2m);
-    console.log("Humidity:", data.current.relative_humidity_2m);
-    const humidity = data.current.relative_humidity_2m;
-    const rainfall = data.hourly.precipitation.reduce((sum, value) => sum + value, 0);
-    let riskScore = Math.min(
-    100,
-    Math.round((rainfall * 1.5) + (humidity * 0.4))
-);
-    window.weatherRiskScore = riskScore;
-   
-    let weatherRiskLevel;
+    const url =
+        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m&hourly=precipitation&past_days=1&forecast_days=1&timezone=auto`;
 
-if (riskScore >= 70) {
-    weatherRiskLevel = "HIGH";
-} else if (riskScore >= 40) {
-    weatherRiskLevel = "MEDIUM";
-} else {
-    weatherRiskLevel = "LOW";
-}
+    try {
 
-const riskElement = document.getElementById("riskLevel");
+        const response = await fetch(url);
+        const data = await response.json();
 
-if (riskElement) {
-    riskElement.textContent = weatherRiskLevel;
-}
-if (riskElement) {
-    riskElement.className = "";
+        const temperature = data.current.temperature_2m;
+        const humidity = data.current.relative_humidity_2m;
 
-    if (weatherRiskLevel === "HIGH") {
-        riskElement.classList.add("high-risk");
-    } 
-    else if (weatherRiskLevel === "MEDIUM") {
-        riskElement.classList.add("medium-risk");
-    } 
-    else {
-        riskElement.classList.add("low-risk");
+        const rainfall = data.hourly.precipitation
+            .reduce((sum, value) => sum + value, 0);
+
+        let riskScore = Math.min(
+            100,
+            Math.round((rainfall * 1.5) + (humidity * 0.4))
+        );
+
+        window.weatherRiskScore = riskScore;
+
+        let weatherRiskLevel;
+
+        if (riskScore >= 70) {
+            weatherRiskLevel = "HIGH";
+        }
+        else if (riskScore >= 40) {
+            weatherRiskLevel = "MEDIUM";
+        }
+        else {
+            weatherRiskLevel = "LOW";
+        }
+
+        document.getElementById("temperature").textContent =
+            temperature + "°C";
+
+        document.getElementById("humidity").textContent =
+            humidity + "%";
+
+        document.getElementById("rainfall").textContent =
+            rainfall.toFixed(1) + " mm";
+
+        const riskElement =
+            document.getElementById("riskLevel");
+
+        if (riskElement) {
+
+            riskElement.textContent =
+                weatherRiskLevel;
+
+            riskElement.className = "";
+
+            if (weatherRiskLevel === "HIGH") {
+                riskElement.classList.add("high-risk");
+            }
+            else if (weatherRiskLevel === "MEDIUM") {
+                riskElement.classList.add("medium-risk");
+            }
+            else {
+                riskElement.classList.add("low-risk");
+            }
+        }
+
+        console.log("Live Weather Loaded");
+        console.log("Temperature:", temperature);
+        console.log("Humidity:", humidity);
+        console.log("Rainfall:", rainfall);
+        console.log("Risk Score:", riskScore);
+
+    }
+    catch (error) {
+
+        console.error("Weather Error:", error);
+
+        document.getElementById("temperature").textContent =
+            "Unable to load";
+
+        document.getElementById("humidity").textContent =
+            "Unable to load";
+
+        document.getElementById("rainfall").textContent =
+            "Unable to load";
     }
 }
-    document.getElementById("temperature").textContent =
-    data.current.temperature_2m + "°C";
 
-    document.getElementById("humidity").textContent =
-    data.current.relative_humidity_2m + "%";
 
-    document.getElementById("rainfall").textContent =
-    rainfall.toFixed(1) + " mm";
-}
 
-getWeather();
-document.getElementById("location").addEventListener("change", function () {
-    getWeather();
-});
 function triggerWarningSMS() {
 
     const user = localStorage.getItem("user");
