@@ -415,6 +415,7 @@ if (savedLocation) {
 
 } 
 async function searchLocation() {
+
     const searchText =
         document.getElementById("searchLocation").value.trim();
 
@@ -424,28 +425,29 @@ async function searchLocation() {
     }
 
     try {
+
         const url =
-            "https://photon.komoot.io/api/?q=" +
+            "https://geocoding-api.open-meteo.com/v1/search?name=" +
             encodeURIComponent(searchText) +
-            "&limit=1";
+            "&count=1&language=en&format=json";
 
         const response = await fetch(url);
 
         if (!response.ok) {
-            throw new Error("Location API failed");
+            throw new Error("Geocoding API failed");
         }
 
         const data = await response.json();
 
-        if (!data.features || data.features.length === 0) {
+        if (!data.results || data.results.length === 0) {
             alert("Location not found.");
             return;
         }
 
-        const location = data.features[0];
+        const location = data.results[0];
 
-        userLatitude = location.geometry.coordinates[1];
-        userLongitude = location.geometry.coordinates[0];
+        userLatitude = location.latitude;
+        userLongitude = location.longitude;
 
         map.setView(
             [userLatitude, userLongitude],
@@ -458,7 +460,9 @@ async function searchLocation() {
         ])
         .setPopupContent(
             "📍 " +
-            (location.properties.name || searchText)
+            location.name +
+            ", " +
+            (location.country || "")
         )
         .openPopup();
 
