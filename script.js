@@ -1,4 +1,4 @@
-let marker;
+
 let userLatitude = null;
 let userLongitude = null;
 
@@ -92,6 +92,17 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 // Risk markers for NER locations
+// Locations of North Eastern Region states
+const locations = {
+    "Sikkim": [27.5330, 88.5122],
+    "Assam": [26.2006, 92.9376],
+    "Arunachal Pradesh": [28.2180, 94.7278],
+    "Meghalaya": [25.4670, 91.3662],
+    "Nagaland": [26.1584, 94.5624],
+    "Manipur": [24.6637, 93.9063],
+    "Mizoram": [23.1645, 92.9376],
+    "Tripura": [23.9408, 91.9882]
+};
 
 const riskData = {
     "Sikkim": "HIGH",
