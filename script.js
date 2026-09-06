@@ -36,6 +36,7 @@ function getLiveLocation() {
     );
 }
 function checkRisk() {
+    const result = document.getElementById("riskResult");
 
   const location =
     userLatitude !== null && userLongitude !== null
@@ -329,6 +330,12 @@ function getLiveLocation() {
                 "Latitude: " + userLatitude.toFixed(6) +
                 " | Longitude: " + userLongitude.toFixed(6);
              getWeather();
+
+map.setView([userLatitude, userLongitude], 13);
+
+marker.setLatLng([userLatitude, userLongitude])
+    .setPopupContent("📍 Your Live Location - Landslide Monitoring")
+    .openPopup();
             // Save location for current browser
             localStorage.setItem(
                 "userLocation",
