@@ -328,7 +328,7 @@ function getLiveLocation() {
             coordinates.textContent =
                 "Latitude: " + userLatitude.toFixed(6) +
                 " | Longitude: " + userLongitude.toFixed(6);
-     getWeather();
+             getWeather();
             // Save location for current browser
             localStorage.setItem(
                 "userLocation",
