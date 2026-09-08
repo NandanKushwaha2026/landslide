@@ -437,30 +437,37 @@ async function searchLocation() {
 
     try {
         const url =
-            "https://geocoding-api.open-meteo.com/v1/search?name=" +
-            encodeURIComponent(searchText) +
-            "&count=10&language=en&format=json&countryCode=IN";
+            "https://nominatim.openstreetmap.org/search" +
+            "?q=" +
+            encodeURIComponent(searchText + ", India") +
+            "&format=json" +
+            "&addressdetails=1" +
+            "&limit=5" +
+            "&countrycodes=in";
 
-        const response = await fetch(url);
+        const response = await fetch(url, {
+            headers: {
+                "Accept": "application/json"
+            }
+        });
 
         if (!response.ok) {
-            throw new Error("Geocoding API failed");
+            throw new Error("Location search failed");
         }
 
         const data = await response.json();
 
-        if (!data.results || data.results.length === 0) {
+        if (!data || data.length === 0) {
             alert(
                 "Location not found in India. Please try another location."
             );
             return;
         }
 
-        // First Indian result
-        const location = data.results[0];
+        const location = data[0];
 
-        userLatitude = location.latitude;
-        userLongitude = location.longitude;
+        userLatitude = parseFloat(location.lat);
+        userLongitude = parseFloat(location.lon);
 
         map.setView(
             [userLatitude, userLongitude],
@@ -472,11 +479,7 @@ async function searchLocation() {
             userLongitude
         ])
         .setPopupContent(
-            "📍 " +
-            location.name +
-            ", " +
-            (location.admin1 || "") +
-            ", India"
+            "📍 " + location.display_name
         )
         .openPopup();
 
