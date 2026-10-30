@@ -1,6 +1,22 @@
 
 let userLatitude = null;
 let userLongitude = null;
+const nerBounds = L.latLngBounds(
+    [21.5, 87.5],
+    [29.5, 97.8]
+);
+
+const map = L.map('map', {
+    maxBounds: nerBounds.pad(0.08),
+    maxBoundsViscosity: 1,
+    minZoom: 6
+});
+
+map.fitBounds(nerBounds);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
 function getLiveLocation() {
     const status = document.getElementById("locationStatus");
