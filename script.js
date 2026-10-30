@@ -102,7 +102,6 @@ function checkRisk() {
 }
 }
 
-const map = L.map('map').setView([26.2006, 92.9376], 7);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 
