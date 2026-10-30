@@ -91,63 +91,89 @@ const map = L.map('map').setView([26.2006, 92.9376], 7);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
-// Risk markers for NER locations
-// Locations of North Eastern Region states
-const locations = {
-    "Sikkim": [27.5330, 88.5122],
-    "Assam": [26.2006, 92.9376],
-    "Arunachal Pradesh": [28.2180, 94.7278],
-    "Meghalaya": [25.4670, 91.3662],
-    "Nagaland": [26.1584, 94.5624],
-    "Manipur": [24.6637, 93.9063],
-    "Mizoram": [23.1645, 92.9376],
-    "Tripura": [23.9408, 91.9882]
-};
+// NORTH EAST INDIA - 8 STATES MAP
 
-const riskData = {
-    "Sikkim": "HIGH",
-    "Assam": "MEDIUM",
-    "Arunachal Pradesh": "HIGH",
-    "Meghalaya": "HIGH",
-    "Nagaland": "MEDIUM",
-    "Manipur": "MEDIUM",
-    "Mizoram": "MEDIUM",
-    "Tripura": "LOW"
-};
+const nerStates = [
+    "Arunachal Pradesh",
+    "Assam",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Sikkim",
+    "Tripura"
+];
 
-Object.keys(riskData).forEach(function(location) {
+// Load real state boundaries from GeoJSON
+const geoJsonURL =
+    "https://raw.githubusercontent.com/iamaanahmad/GeoJson-of-Indian-States/master/indian-states.geojson";
 
-    let risk = riskData[location];
+let nerBoundaryLayer;
 
-    let color;
-
-    if (risk === "HIGH") {
-        color = "red";
-    } 
-    else if (risk === "MEDIUM") {
-        color = "orange";
-    } 
-    else {
-        color = "green";
-    }
-
-    L.circleMarker(locations[location], {
-        radius: 10,
-        color: color,
-        fillColor: color,
-        fillOpacity: 0.7
+fetch(geoJsonURL)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("GeoJSON loading failed");
+        }
+        return response.json();
     })
-    .addTo(map)
-    .bindPopup(
-        "📍 " + location + "<br>" +
-        "⚠️ Risk Level: <strong>" + risk + "</strong>"
-    );
-});
+    .then(data => {
 
- marker = L.marker(locations["Sikkim"])
+        const filteredStates = {
+            type: "FeatureCollection",
+            features: data.features.filter(feature =>
+                nerStates.includes(feature.properties.name)
+            )
+        };
+
+        if (filteredStates.features.length !== 8) {
+            throw new Error("All 8 states were not found");
+        }
+
+        nerBoundaryLayer = L.geoJSON(filteredStates, {
+
+            style: {
+                color: "#14532d",
+                weight: 2,
+                fillColor: "#86efac",
+                fillOpacity: 0.35
+            },
+
+            onEachFeature: function(feature, layer) {
+
+                const stateName = feature.properties.name;
+
+                layer.bindPopup(
+                    "<strong>" + stateName + "</strong>"
+                );
+
+                layer.on("click", function() {
+                    map.fitBounds(layer.getBounds());
+                });
+            }
+
+        }).addTo(map);
+
+        const bounds = nerBoundaryLayer.getBounds();
+
+        map.fitBounds(bounds, {
+            padding: [20, 20]
+        });
+
+        map.setMaxBounds(bounds.pad(0.15));
+        map.options.maxBoundsViscosity = 1;
+
+        console.log("North East 8 states loaded successfully");
+
+    })
+    .catch(error => {
+        console.error("Map Error:", error);
+    });
+
+// User location marker
+let marker = L.marker([27.5330, 88.5122])
     .addTo(map)
-    .bindPopup("📍 Sikkim - Landslide Monitoring")
-    .openPopup();
+    .bindPopup("Landslide Monitoring Location");
 
 async function getWeather() {
 
