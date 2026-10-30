@@ -102,9 +102,6 @@ function checkRisk() {
 }
 }
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-
-
 map.fitBounds(nerBounds);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
