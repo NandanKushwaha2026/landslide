@@ -108,10 +108,6 @@ const nerBounds = L.latLngBounds(
     [21.5, 87.5],
     [29.5, 97.8]
 );
-const nerBounds = L.latLngBounds(
-    [21.5, 87.5],
-    [29.5, 97.8]
-);
 
 
 map.fitBounds(nerBounds);
