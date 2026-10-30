@@ -102,12 +102,10 @@ function checkRisk() {
 }
 }
 
-// North East India map boundaries
-
-const nerBounds = L.latLngBounds(
-    [21.5, 87.5],
-    [29.5, 97.8]
-);
+const map = L.map('map').setView([26.2006, 92.9376], 7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
 
 map.fitBounds(nerBounds);
