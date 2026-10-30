@@ -92,7 +92,18 @@ const nerBounds = L.latLngBounds(
     [21.5, 87.5],
     [29.5, 97.8]
 );
+const nerBounds = L.latLngBounds(
+    [21.5, 87.5],
+    [29.5, 97.8]
+);
 
+const map = L.map('map', {
+    maxBounds: nerBounds.pad(0.08),
+    maxBoundsViscosity: 1,
+    minZoom: 6
+});
+
+map.fitBounds(nerBounds);
 const map = L.map('map', {
     maxBounds: nerBounds.pad(0.08),
     maxBoundsViscosity: 1,
