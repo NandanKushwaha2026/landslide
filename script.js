@@ -104,16 +104,7 @@ function checkRisk() {
 
 const map = L.map('map').setView([26.2006, 92.9376], 7);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
 
-
-map.fitBounds(nerBounds);
-const map = L.map('map', {
-    maxBounds: nerBounds.pad(0.08),
-    maxBoundsViscosity: 1,
-    minZoom: 6
-});
 
 map.fitBounds(nerBounds);
 
