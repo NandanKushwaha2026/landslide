@@ -1,4 +1,4 @@
 flask
-flasl-cors
+flask-cors
 request
 gunicorn
