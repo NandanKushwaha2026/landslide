@@ -11,7 +11,30 @@ const map = L.map('map', {
     maxBoundsViscosity: 1,
     minZoom: 6
 });
+const neStates = [
+  { name: "Assam", lat: 26.2006, lng: 92.9376, risk: "Moderate" },
+  { name: "Meghalaya", lat: 25.4670, lng: 91.3662, risk: "High" },
+  { name: "Arunachal Pradesh", lat: 28.2180, lng: 94.7278, risk: "High" },
+  { name: "Nagaland", lat: 26.1584, lng: 94.5624, risk: "High" },
+  { name: "Manipur", lat: 24.6637, lng: 93.9063, risk: "Moderate" },
+  { name: "Mizoram", lat: 23.1645, lng: 92.9376, risk: "High" },
+  { name: "Tripura", lat: 23.9408, lng: 91.9882, risk: "Low" },
+  { name: "Sikkim", lat: 27.5330, lng: 88.5122, risk: "High" }
+];
 
+// Map par markers add karna
+neStates.forEach(state => {
+  const markerColor = state.risk === "High" ? "red" : state.risk === "Moderate" ? "orange" : "green";
+  
+  L.circleMarker([state.lat, state.lng], {
+    radius: 8,
+    fillColor: markerColor,
+    color: "#fff",
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 0.8
+  }).addTo(map).bindPopup(`<b>${state.name}</b><br>Risk Level: ${state.risk}`);
+});
 map.fitBounds(nerBounds);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
