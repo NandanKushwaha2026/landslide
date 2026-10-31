@@ -185,7 +185,7 @@ fetch(geoJsonURL)
         }
         return response.json();
     })
-    .then(data => {
+    .then(async data => {
 
         const filteredStates = {
             type: "FeatureCollection",
