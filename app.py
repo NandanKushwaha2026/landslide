@@ -25,7 +25,29 @@ def calculate_risk(rainfall, soil_moisture=0.5):
         return "Moderate", 55
     else:
         return "Low", 20
+@app.route('/api/weather', methods=['GET'])
+def weather():
+    lat = request.args.get("lat", type=float)
+    lon = request.args.get("lon", type=float)
 
+    if lat is None or lon is None:
+        return jsonify({"error": "lat and lon required"}), 400
+
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "current": "temperature_2m,relative_humidity_2m",
+        "hourly": "precipitation",
+        "forecast_days": 1,
+    }
+
+    try:
+        res = requests.get(url, params=params, timeout=10)
+        res.raise_for_status()
+        return jsonify(res.json())
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 502
 @app.route('/api/states-risk', methods=['GET'])
 def get_all_states_risk():
     results = []
