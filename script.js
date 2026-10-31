@@ -222,7 +222,7 @@ fetch(geoJsonURL)
                 });
             }
 
-        }).addTo(map);
+        });
 
         const bounds = nerBoundaryLayer.getBounds();
 
