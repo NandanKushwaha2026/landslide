@@ -36,7 +36,7 @@ neStates.forEach(state => {
   }).addTo(map).bindPopup(`<b>${state.name}</b><br>Risk Level: ${state.risk}`);
 });
 map.fitBounds(nerBounds);
-  })
+  
       // India states GeoJSON ko fetch karke sirf North East 8 states filter karna
 fetch('https://raw.githubusercontent.com/Subhash9325/GeoJson-Data-of-Indian-States/master/Indian_States')
   .then(response => response.json())
