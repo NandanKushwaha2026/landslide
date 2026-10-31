@@ -23,18 +23,18 @@ const neStates = [
 ];
 
 // Map par markers add karna
-nerStates.forEach(state => {
-  const markerColor = state.risk === "High" ? "red" : state.risk === "Moderate" ? "orange" : "green";
+//nerStates.forEach(state => {
+ // const markerColor = state.risk === "High" ? "red" : state.risk === "Moderate" ? "orange" : "green";
   
-  L.circleMarker([state.lat, state.lng], {
-    radius: 8,
-    fillColor: markerColor,
-    color: "#fff",
-    weight: 2,
-    opacity: 1,
-    fillOpacity: 0.8
-  }).addTo(map).bindPopup(`<b>${state.name}</b><br>Risk Level: ${state.risk}`);
-});
+//  L.circleMarker([state.lat, state.lng], {
+ //   radius: 8,
+ //   fillColor: markerColor,
+ //   color: "#fff",
+ //   weight: 2,
+   // opacity: 1,
+   // fillOpacity: 0.8
+//  }).addTo(map).bindPopup(`<b>${state.name}</b><br>Risk Level: ${state.risk}`);
+//});
 map.fitBounds(nerBounds);
   
       // India states GeoJSON ko fetch karke sirf North East 8 states filter karna
