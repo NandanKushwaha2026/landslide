@@ -253,9 +253,7 @@ async function getWeather() {
     const latitude = userLatitude;
     const longitude = userLongitude;
 
-    const url =
-        `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m&hourly=precipitation&past_days=1&forecast_days=1&timezone=auto`;
-
+   const url = `http://127.0.0.1:5000/api/states-risk`;
     try {
 
         const response = await fetch(url);
