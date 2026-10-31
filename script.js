@@ -23,7 +23,7 @@ const neStates = [
 ];
 
 // Map par markers add karna
-neStates.forEach(state => {
+nerStates.forEach(state => {
   const markerColor = state.risk === "High" ? "red" : state.risk === "Moderate" ? "orange" : "green";
   
   L.circleMarker([state.lat, state.lng], {
@@ -69,7 +69,6 @@ fetch('https://raw.githubusercontent.com/Subhash9325/GeoJson-Data-of-Indian-Stat
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
 
 function getLiveLocation() {
     const status = document.getElementById("locationStatus");
