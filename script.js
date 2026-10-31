@@ -197,15 +197,36 @@ fetch(geoJsonURL)
         if (filteredStates.features.length !== 8) {
             throw new Error("All 8 states were not found");
         }
-       
+       let riskByState = {};
+        try {
+            const riskRes = await fetch("https://landslide-1-0d4j.onrender.com/api/states-risk");
+            const riskData = await riskRes.json();
+            const list = Array.isArray(riskData) ? riskData : (riskData.states || []);
+            list.forEach(s => {
+                riskByState[s.name || s.state] = s.risk || s.level;
+            });
+        } catch (e) {
+            console.error("Risk data load failed:", e);
+        }
+
+        function riskColor(risk) {
+            const r = String(risk || "").toLowerCase();
+            if (r === "high") return "#dc2626";
+            if (r === "moderate" || r === "medium") return "#facc15";
+            if (r === "low") return "#22c55e";
+            return "#9ca3af";
+        }
         nerBoundaryLayer = L.geoJSON(filteredStates, {
 
-            style: {
+           style: function(feature) {
+            const color = riskColor(riskByState[feature.properties.name]);
+            return {
                 color: "#14532d",
                 weight: 1,
-                fillColor: "#86efac",
+                fillColor: color,
                 fillOpacity: 0.15
-            },
+            };
+        },
 
             onEachFeature: function(feature, layer) {
 
