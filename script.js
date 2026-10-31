@@ -201,7 +201,7 @@ fetch(geoJsonURL)
         try {
             const riskRes = await fetch("https://landslide-1-0d4j.onrender.com/api/states-risk");
             const riskData = await riskRes.json();
-            const list = Array.isArray(riskData) ? riskData : (riskData.states || []);
+            const list = riskData.data || [];
             list.forEach(s => {
                 riskByState[s.name || s.state] = s.risk || s.level;
             });
