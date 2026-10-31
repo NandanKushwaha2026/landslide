@@ -36,23 +36,37 @@ neStates.forEach(state => {
   }).addTo(map).bindPopup(`<b>${state.name}</b><br>Risk Level: ${state.risk}`);
 });
 map.fitBounds(nerBounds);
-fetch('path/to/northeast_states.geojson')
+  })
+      // India states GeoJSON ko fetch karke sirf North East 8 states filter karna
+fetch('https://raw.githubusercontent.com/Subhash9325/GeoJson-Data-of-Indian-States/master/Indian_States')
   .then(response => response.json())
   .then(data => {
+    const neStatesNames = [
+      "Assam", "Meghalaya", "Arunachal Pradesh", 
+      "Nagaland", "Manipur", "Mizoram", "Tripura", "Sikkim"
+    ];
+
     L.geoJSON(data, {
+      filter: function(feature) {
+        // Sirf 8 North East states ko allow karega
+        return neStatesNames.includes(feature.properties.NAME_1 || feature.properties.st_nm);
+      },
       style: function(feature) {
         return {
-          color: "#3388ff",
+          color: "#2b8a3e",       // Border color (Greenish line)
           weight: 2,
-          fillOpacity: 0.1
+          fillColor: "#a3e635",   // Haldi/Light green shade
+          fillOpacity: 0.35
         };
       },
       onEachFeature: function(feature, layer) {
-        layer.bindPopup(feature.properties.ST_NM || feature.properties.state_name);
+        const stateName = feature.properties.NAME_1 || feature.properties.st_nm;
+        layer.bindPopup(`<b>${stateName}</b><br>Region: North East India`);
       }
     }).addTo(map);
   })
   .catch(err => console.error("GeoJSON load nahi hua:", err));
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
