@@ -197,16 +197,14 @@ fetch(geoJsonURL)
         if (filteredStates.features.length !== 8) {
             throw new Error("All 8 states were not found");
         }
-        filter: function(feature) {
-    return feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon";
-},
+       
         nerBoundaryLayer = L.geoJSON(filteredStates, {
 
             style: {
                 color: "#14532d",
-                weight: 2,
+                weight: 1,
                 fillColor: "#86efac",
-                fillOpacity: 0.35
+                fillOpacity: 0.15
             },
 
             onEachFeature: function(feature, layer) {
@@ -222,7 +220,7 @@ fetch(geoJsonURL)
                 });
             }
 
-        });
+        }).addTo(map);
 
         const bounds = nerBoundaryLayer.getBounds();
 
