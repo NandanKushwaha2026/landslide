@@ -197,7 +197,9 @@ fetch(geoJsonURL)
         if (filteredStates.features.length !== 8) {
             throw new Error("All 8 states were not found");
         }
-
+        filter: function(feature) {
+    return feature.geometry.type === "Polygon" || feature.geometry.type === "MultiPolygon";
+},
         nerBoundaryLayer = L.geoJSON(filteredStates, {
 
             style: {
