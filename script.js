@@ -253,7 +253,7 @@ async function getWeather() {
     const latitude = userLatitude;
     const longitude = userLongitude;
 
-  const url = 'https://landslide-1-0d4j.onrender.com/api/states-risk';
+ const url = `https://landslide-1-0d4j.onrender.com/api/weather?lat=${latitude}&lon=${longitude}`;
     try {
 
         const response = await fetch(url);
