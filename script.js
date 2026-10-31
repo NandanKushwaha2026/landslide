@@ -11,7 +11,7 @@ const map = L.map('map', {
     maxBoundsViscosity: 1,
     minZoom: 6
 });
-const neStates = [
+/*const neStates = [
   { name: "Assam", lat: 26.2006, lng: 92.9376, risk: "Moderate" },
   { name: "Meghalaya", lat: 25.4670, lng: 91.3662, risk: "High" },
   { name: "Arunachal Pradesh", lat: 28.2180, lng: 94.7278, risk: "High" },
@@ -22,7 +22,7 @@ const neStates = [
   { name: "Sikkim", lat: 27.5330, lng: 88.5122, risk: "High" }
 ];
 
-/*Map par markers add karna
+Map par markers add karna
 //nerStates.forEach(state => {
  // const markerColor = state.risk === "High" ? "red" : state.risk === "Moderate" ? "orange" : "green";
   
