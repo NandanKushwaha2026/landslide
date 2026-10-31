@@ -48,6 +48,48 @@ def weather():
         return jsonify(res.json())
     except requests.RequestException as e:
         return jsonify({"error": str(e)}), 502
+        @app.route('/api/forecast', methods=['GET'])
+def forecast():
+    lat = request.args.get("lat", type=float)
+    lon = request.args.get("lon", type=float)
+    if lat is None or lon is None:
+        return jsonify({"error": "lat and lon required"}), 400
+
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "daily": "precipitation_sum,temperature_2m_max",
+        "hourly": "soil_moisture_0_to_7cm",
+        "past_days": 3,
+        "forecast_days": 7,
+        "timezone": "auto",
+    }
+    try:
+        res = requests.get("https://api.open-meteo.com/v1/forecast", params=params, timeout=10)
+        res.raise_for_status()
+        d = res.json()
+    except requests.RequestException as e:
+        return jsonify({"error": str(e)}), 502
+
+    dates = d["daily"]["time"]
+    rain = [r or 0 for r in d["daily"]["precipitation_sum"]]
+    temp = d["daily"]["temperature_2m_max"]
+    soil_h = d["hourly"]["soil_moisture_0_to_7cm"]
+
+    days = []
+    for i in range(3, len(dates)):
+        past3 = sum(rain[i-3:i])
+        vals = [v for v in soil_h[i*24:(i+1)*24] if v is not None]
+        soil = sum(vals) / len(vals) if vals else 0.3
+        score = rain[i] + 0.5 * past3 + soil * 30
+        risk = "High" if score >= 50 else "Moderate" if score >= 25 else "Low"
+        days.append({
+            "date": dates[i],
+            "rain": round(rain[i], 1),
+            "temp": temp[i],
+            "risk": risk,
+        })
+    return jsonify({"success": True, "days": days})
 @app.route('/api/states-risk', methods=['GET'])
 def get_all_states_risk():
     results = []
