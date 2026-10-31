@@ -36,7 +36,23 @@ neStates.forEach(state => {
   }).addTo(map).bindPopup(`<b>${state.name}</b><br>Risk Level: ${state.risk}`);
 });
 map.fitBounds(nerBounds);
-
+fetch('path/to/northeast_states.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      style: function(feature) {
+        return {
+          color: "#3388ff",
+          weight: 2,
+          fillOpacity: 0.1
+        };
+      },
+      onEachFeature: function(feature, layer) {
+        layer.bindPopup(feature.properties.ST_NM || feature.properties.state_name);
+      }
+    }).addTo(map);
+  })
+  .catch(err => console.error("GeoJSON load nahi hua:", err));
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
