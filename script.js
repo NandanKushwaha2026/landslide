@@ -69,7 +69,7 @@ fetch('https://raw.githubusercontent.com/Subhash9325/GeoJson-Data-of-Indian-Stat
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
-});
+}
 function getLiveLocation() {
     const status = document.getElementById("locationStatus");
     const coordinates = document.getElementById("coordinates");
