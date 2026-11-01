@@ -200,3 +200,4 @@ button:hover {
 .search-box button {
     padding: 12px 20px;
 }
+.forecast-row { display: flex; gap: 8px; overflow-x: auto; padding: 8px 0; }
