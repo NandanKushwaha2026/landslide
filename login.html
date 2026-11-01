@@ -60,54 +60,37 @@
 
 </div>
 
-
 <script>
-
-document.getElementById("loginForm").addEventListener("submit", function(event) {
-
+document.getElementById("loginForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    let userInput =
-        document.getElementById("userInput").value.trim();
+    const userInput = document.getElementById("userInput").value.trim();
+    const password = document.getElementById("password").value;
+    const msg = document.getElementById("loginMessage");
 
-    let password =
-        document.getElementById("password").value;
+    msg.textContent = "Logging in...";
 
-    // Registered user data
-    let savedUser = localStorage.getItem("user");
+    try {
+        const res = await fetch("https://landslide-1-0d4j.onrender.com/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: userInput, password: password })
+        });
+        const data = await res.json();
 
-    if (!savedUser) {
-
-        document.getElementById("loginMessage").textContent =
-            "No account found. Please register first.";
-
-        return;
+        if (data.success) {
+            localStorage.setItem("loggedIn", "true");
+            localStorage.setItem("loggedUser", data.user.name || data.user.email);
+            localStorage.setItem("userEmail", data.user.email);
+            window.location.href = "index.html";
+        } else {
+            msg.textContent = "❌ " + (data.error || "Login failed");
+        }
+    } catch (e) {
+        msg.textContent = "❌ Server se connect nahi ho pa raha. 1 minute baad try karein.";
+        console.error(e);
     }
-
-    let user = JSON.parse(savedUser);
-
-    // Check email/mobile and password
-    if (
-        (user.email === userInput || user.mobile === userInput) &&
-        user.password === password
-    ) {
-
-        localStorage.setItem("loggedIn", "true");
-
-        // Save logged-in user's name
-        localStorage.setItem("loggedUser", user.name);
-
-        window.location.href = "index.html";
-
-    } else {
-
-        document.getElementById("loginMessage").textContent =
-            "❌ Invalid email/mobile or password.";
-
-    }
-
 });
-
 </script>
 
 </body>
