@@ -340,7 +340,7 @@ async function getWeather() {
         console.log("Humidity:", humidity);
         console.log("Rainfall:", rainfall);
         console.log("Risk Score:", riskScore);
-
+loadForecast();
     }
     catch (error) {
 
