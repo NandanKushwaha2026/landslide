@@ -4,6 +4,7 @@ import requests
 import os
 import psycopg2
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import date
 app = Flask(__name__)
 CORS(app)  # फ्रंटएंड को बैकएंड से डेटा फ़ेच करने की अनुमति देता है
 
@@ -144,7 +145,108 @@ def login():
     if not row or not check_password_hash(row[2], password):
         return jsonify({"success": False, "error": "Wrong email or password"}), 401
 
-    return jsonify({"success": True, "user": {"id": row[0], "name": row[1], "email": email}})   
+    return jsonify({"success": True, "user": {"id": row[0], "name": row[1], "email": email}})
+
+def get_risk_days(lat, lon):
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "daily": "precipitation_sum",
+        "hourly": "soil_moisture_0_to_7cm",
+        "past_days": 3,
+        "forecast_days": 3,
+        "timezone": "auto",
+    }
+    res = requests.get("https://api.open-meteo.com/v1/forecast", params=params, timeout=10)
+    res.raise_for_status()
+    d = res.json()
+    rain = [r or 0 for r in d["daily"]["precipitation_sum"]]
+    soil_h = d["hourly"]["soil_moisture_0_to_7cm"]
+    out = []
+    for i in range(3, len(rain)):
+        past3 = sum(rain[i-3:i])
+        vals = [v for v in soil_h[i*24:(i+1)*24] if v is not None]
+        soil = sum(vals) / len(vals) if vals else 0.3
+        score = rain[i] + 0.5 * past3 + soil * 30
+        risk = "High" if score >= 50 else "Moderate" if score >= 25 else "Low"
+        out.append({"date": d["daily"]["time"][i], "rain": round(rain[i], 1), "risk": risk})
+    return out
+
+
+def send_email(to, subject, html):
+    r = requests.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={"api-key": os.environ["BREVO_API_KEY"], "content-type": "application/json"},
+        json={
+            "sender": {"name": "Landslide Alert", "email": os.environ["SENDER_EMAIL"]},
+            "to": [{"email": to}],
+            "subject": subject,
+            "htmlContent": html,
+        },
+        timeout=15,
+    )
+    print("Email status:", r.status_code)
+    return r.status_code in (200, 201)
+
+
+@app.route('/api/update-location', methods=['POST'])
+def update_location():
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    lat = data.get("lat")
+    lon = data.get("lon")
+    if not email or lat is None or lon is None:
+        return jsonify({"success": False, "error": "email, lat, lon required"}), 400
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("UPDATE users SET latitude = %s, longitude = %s WHERE email = %s", (lat, lon, email))
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        print("Location error:", e)
+        return jsonify({"success": False, "error": "Server error"}), 500
+
+
+@app.route('/api/run-alerts', methods=['GET'])
+def run_alerts():
+    if request.args.get("key") != os.environ.get("CRON_SECRET"):
+        return jsonify({"error": "unauthorized"}), 401
+
+    test_to = request.args.get("test")
+    if test_to:
+        ok = send_email(test_to, "Landslide Alert: test", "<p>Test email सफल रहा।</p>")
+        return jsonify({"test_sent": ok})
+
+    sent = 0
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT id, name, email, latitude, longitude, last_alert_date FROM users "
+                    "WHERE latitude IS NOT NULL AND longitude IS NOT NULL")
+        users = cur.fetchall()
+        for uid, name, email, lat, lon, last in users:
+            if last == date.today():
+                continue
+            try:
+                days = get_risk_days(lat, lon)
+            except Exception as e:
+                print("Risk fetch error:", e)
+                continue
+            high = [x for x in days if x["risk"] == "High"]
+            if high:
+                body = "<p>नमस्ते %s,</p><p>आपके इलाके में landslide का <b>High risk</b> अनुमानित है:</p><ul>%s</ul><p>सावधान रहें और सरकारी चेतावनी (मौसम विभाग/आपदा प्रबंधन) ज़रूर देखें।</p>" % (
+                    name or "", "".join("<li>%s: बारिश %s mm</li>" % (x["date"], x["rain"]) for x in high))
+                if send_email(email, "Landslide High Risk Alert", body):
+                    cur.execute("UPDATE users SET last_alert_date = %s WHERE id = %s", (date.today(), uid))
+                    conn.commit()
+                    sent += 1
+        conn.close()
+    except Exception as e:
+        print("Alert error:", e)
+        return jsonify({"success": False}), 500
+    return jsonify({"success": True, "sent": sent})
 @app.route('/api/states-risk', methods=['GET'])
 def get_all_states_risk():
     results = []
