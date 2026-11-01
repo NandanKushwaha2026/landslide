@@ -341,6 +341,7 @@ async function getWeather() {
         console.log("Rainfall:", rainfall);
         console.log("Risk Score:", riskScore);
 loadForecast();
+saveUserLocation();
     }
     catch (error) {
 
@@ -630,5 +631,18 @@ async function loadForecast() {
     } catch (e) {
         box.textContent = "Forecast load नहीं हुआ";
         console.error("Forecast error:", e);
+    }
+}
+async function saveUserLocation() {
+    const email = localStorage.getItem("userEmail");
+    if (!email || userLatitude === null || userLongitude === null) return;
+    try {
+        await fetch("https://landslide-1-0d4j.onrender.com/api/update-location", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email, lat: userLatitude, lon: userLongitude })
+        });
+    } catch (e) {
+        console.error("Location save error:", e);
     }
 }
