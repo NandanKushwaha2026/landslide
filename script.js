@@ -623,7 +623,7 @@ async function loadForecast() {
         const data = await res.json();
         const colors = { High: "#dc2626", Moderate: "#facc15", Low: "#22c55e" };
         box.innerHTML = data.days.map(d => {
-            const day = new Date(d.date).toLocaleDateString("hi-IN", { weekday: "short", day: "numeric", month: "short" });
+            const day = new Date(d.date).toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
             return `<div style="background:${colors[d.risk]};padding:8px;border-radius:8px;min-width:80px;text-align:center;color:#111">
                 <b>${day}</b><br>🌡️ ${d.temp}°C<br>🌧️ ${d.rain} mm<br>${d.risk}</div>`;
         }).join("");
