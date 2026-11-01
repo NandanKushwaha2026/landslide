@@ -83,34 +83,37 @@
 </div>
 
 <script>
-
-document.getElementById("registerForm").addEventListener("submit", function(event) {
-
+document.getElementById("registerForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    let name = document.getElementById("name").value;
-    let mobile = document.getElementById("mobile").value;
-    let email = document.getElementById("email").value;
-    let location = document.getElementById("location").value;
-    let password = document.getElementById("password").value;
+    const name = document.getElementById("name").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const msg = document.getElementById("registerMessage");
 
-    let user = {
-        name: name,
-        mobile: mobile,
-        email: email,
-        location: location,
-        password: password
-    };
+    msg.textContent = "Registering...";
 
-    localStorage.setItem("user", JSON.stringify(user));
+    try {
+        const res = await fetch("https://landslide-1-0d4j.onrender.com/api/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: name, phone: mobile, email: email, password: password })
+        });
+        const data = await res.json();
 
-    document.getElementById("registerMessage").textContent =
-        "Registration successful!";
-
-    setTimeout(function() {
-        window.location.href = "login.html";
-    }, 1000);
-
+        if (data.success) {
+            msg.textContent = "Registration successful!";
+            setTimeout(function() {
+                window.location.href = "login.html";
+            }, 1500);
+        } else {
+            msg.textContent = "❌ " + (data.error || "Registration failed");
+        }
+    } catch (e) {
+        msg.textContent = "❌ Server se connect nahi ho pa raha. 1 minute baad try karein.";
+        console.error(e);
+    }
 });
 
 </script>
