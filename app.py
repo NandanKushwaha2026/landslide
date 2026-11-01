@@ -48,7 +48,7 @@ def weather():
         return jsonify(res.json())
     except requests.RequestException as e:
         return jsonify({"error": str(e)}), 502
-        @app.route('/api/forecast', methods=['GET'])
+@app.route('/api/forecast', methods=['GET'])
 def forecast():
     lat = request.args.get("lat", type=float)
     lon = request.args.get("lon", type=float)
@@ -89,7 +89,7 @@ def forecast():
             "temp": temp[i],
             "risk": risk,
         })
-    return jsonify({"success": True, "days": days})
+    return jsonify({"success": True, "days": days})      
 @app.route('/api/states-risk', methods=['GET'])
 def get_all_states_risk():
     results = []
