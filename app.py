@@ -1,7 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
-
+import os
+import psycopg2
+from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 CORS(app)  # फ्रंटएंड को बैकएंड से डेटा फ़ेच करने की अनुमति देता है
 
@@ -89,7 +91,60 @@ def forecast():
             "temp": temp[i],
             "risk": risk,
         })
-    return jsonify({"success": True, "days": days})      
+    return jsonify({"success": True, "days": days})
+def get_db():
+    return psycopg2.connect(os.environ["DATABASE_URL"])
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    data = request.get_json(silent=True) or {}
+    name = (data.get("name") or "").strip()
+    email = (data.get("email") or "").strip().lower()
+    phone = (data.get("phone") or "").strip()
+    password = data.get("password") or ""
+
+    if not email or len(password) < 6:
+        return jsonify({"success": False, "error": "Email and password (min 6 chars) required"}), 400
+
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM users WHERE email = %s", (email,))
+        if cur.fetchone():
+            conn.close()
+            return jsonify({"success": False, "error": "Email already registered"}), 409
+        cur.execute(
+            "INSERT INTO users (name, email, phone, password_hash) VALUES (%s, %s, %s, %s)",
+            (name, email, phone, generate_password_hash(password)),
+        )
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True})
+    except Exception as e:
+        print("Register error:", e)
+        return jsonify({"success": False, "error": "Server error"}), 500
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json(silent=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    password = data.get("password") or ""
+
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        cur.execute("SELECT id, name, password_hash FROM users WHERE email = %s", (email,))
+        row = cur.fetchone()
+        conn.close()
+    except Exception as e:
+        print("Login error:", e)
+        return jsonify({"success": False, "error": "Server error"}), 500
+
+    if not row or not check_password_hash(row[2], password):
+        return jsonify({"success": False, "error": "Wrong email or password"}), 401
+
+    return jsonify({"success": True, "user": {"id": row[0], "name": row[1], "email": email}})   
 @app.route('/api/states-risk', methods=['GET'])
 def get_all_states_risk():
     results = []
