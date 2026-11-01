@@ -615,3 +615,20 @@ async function searchLocation() {
         );
     }
 }
+async function loadForecast() {
+    if (userLatitude === null || userLongitude === null) return;
+    const box = document.getElementById("forecast");
+    try {
+        const res = await fetch(`https://landslide-1-0d4j.onrender.com/api/forecast?lat=${userLatitude}&lon=${userLongitude}`);
+        const data = await res.json();
+        const colors = { High: "#dc2626", Moderate: "#facc15", Low: "#22c55e" };
+        box.innerHTML = data.days.map(d => {
+            const day = new Date(d.date).toLocaleDateString("hi-IN", { weekday: "short", day: "numeric", month: "short" });
+            return `<div style="background:${colors[d.risk]};padding:8px;border-radius:8px;min-width:80px;text-align:center;color:#111">
+                <b>${day}</b><br>🌡️ ${d.temp}°C<br>🌧️ ${d.rain} mm<br>${d.risk}</div>`;
+        }).join("");
+    } catch (e) {
+        box.textContent = "Forecast load नहीं हुआ";
+        console.error("Forecast error:", e);
+    }
+}
